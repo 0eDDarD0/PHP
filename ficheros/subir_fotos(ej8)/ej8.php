@@ -43,7 +43,7 @@
 
             //muestra todas las fotos
             foreach($imagenes as $i){
-                echo '<img src="./fotos/' . $i . '"><br>';
+                echo '<img style="margin:0;idth:200px;height:200px;float:left;" src="./fotos/' . $i . '">';
             }
         }
 
