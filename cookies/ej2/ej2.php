@@ -8,6 +8,14 @@
 </head>
 <body>
 
+<?php
+
+    if(!isset($_COOKIE["idioma"])){
+        setcookie("idioma", "esp", time() + (60 * 2));
+    }      
+
+?>
+
     <form action="process.php" method="post">
         <label for="lang"><?php echo $_COOKIE["idioma"] == "esp" ? "Español" : "Spanish" ?>
             <input type="radio" name="lang" id="lang" <?php echo $_COOKIE["idioma"] == "esp" ? "checked" : "" ?> value="esp">
