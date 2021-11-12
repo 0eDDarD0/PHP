@@ -3,7 +3,7 @@
 </div>
 
 <div align="center">
-    <img  width="100" height="100" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/PHP-logo.svg/1280px-PHP-logo.svg.png">
+    <img  width="250" height="100" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/PHP-logo.svg/1280px-PHP-logo.svg.png">
 </div>
 
 ---
