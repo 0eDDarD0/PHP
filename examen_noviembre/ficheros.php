@@ -8,6 +8,7 @@
 </head>
 <body>
     
+    <!--NO OLVIDAR EL ATRIBUTO ENCTYPE A LA HORA DE SUBIR FICHEROS-->
     <form enctype="multipart/form-data" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) ?>" name="formulario">
         <input type="file" name="imagen" id="imagen">
         <input type="submit" value="Subir foto...">
