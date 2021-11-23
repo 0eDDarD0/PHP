@@ -16,10 +16,6 @@
         }else{
             echo 'Tipo: '. $tipo . '<br>';
         }
-        //$tipo = quitarCaracteres($_REQUEST["tipo"]);
-        //if(empty($tipo)){
-        //    $error_tipo = true;
-        //}
     
 
         //VALIDACION ZONA
@@ -31,10 +27,6 @@
         else{
             echo 'Zona: '. $zona . '<br>';
         }
-        //$zona = quitarCaracteres($_REQUEST["zona"]);
-        //if(empty($zona)){
-        //    $error_zona = true;
-        //}
 
 
         //VALIDACION DIRECCION
