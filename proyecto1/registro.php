@@ -42,15 +42,16 @@
                 $nombre = mysqli_real_escape_string($con, $nombre);
                 $apellidos = mysqli_real_escape_string($con, $apellidos);
                 $correo = mysqli_real_escape_string($con, $correo);
-                $contrasenia = mysqli_real_escape_string($con, $contrasenia);
+                $contrasenia = password_hash(mysqli_real_escape_string($con, $contrasenia), PASSWORD_BCRYPT, ['cost'=>4]);
 
                 //INSERT
                 $insert = mysqli_query($con, 'INSERT INTO usuarios values(null, "'.$nombre.'", "'.$apellidos.'", "'.$correo.'", "'.$contrasenia.'", CURRENT_TIMESTAMP());');
                 if($insert){
-                    echo "<h1>Usuario registrado con exito!</h1><br>";
+                    $_SESSION['sign_in'] = 1;
+                    header('Location: index.php');
                 }else{
                     //GESTION DE CORREO REPETIDO
-                    $_SESSION["correo_existe"] = true;
+                    $_SESSION["correo_existe"] = 1;
                     header('Location: index.php');
                 }
                 
