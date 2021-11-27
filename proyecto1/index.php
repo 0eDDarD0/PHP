@@ -1,6 +1,7 @@
 <?php
     session_start();
 
+    //ELEMENTOS A CARGAR SEGUN SI HAY LOGEO
     if(isset($_SESSION['log_in'])){
         if($_SESSION['log_in']){
             $cuerpo = "col-12";
@@ -17,6 +18,36 @@
         $aside = "col-3";
     }
 
+
+    //ELEMENTOS A CARGAR EN LA PAGINA
+    $con = @mysqli_connect('localhost', 'fer', 'root', 'proyecto1');
+    if(!mysqli_connect_errno()){
+        mysqli_query($con, "SET NAME 'utf-8'"); //nos aseguramos de que la codificacion sea utf 8
+        $categorias = [];
+
+        ////RECOGEMOS TODAS LAS CATEGORIAS A CARGAR DEL NAV
+        $select = mysqli_query($con, 'SELECT * FROM categorias;');
+        while($elem = mysqli_fetch_assoc($select)){  //a la variable se le podra hacer fetch tantas veces como elementos haya
+            $categorias[] = '<li class="nav-item"><a class="nav-link" href=index.php?cat='. $elem['id'] .'>'. $elem['nombre'] .'</a></li>';
+        }
+        
+
+        //ENTRADAS A CARGAR SI SE HA ENTRADO EN ALGUNA
+        if(isset($_GET['cat'])){
+            $cat = $_GET['cat'];
+            $entradas = [];
+
+            $select = mysqli_query($con, 'SELECT * FROM entradas where categoria_id='. $cat .';');
+            while($elem = mysqli_fetch_assoc($select)){  //a la variable se le podra hacer fetch tantas veces como elementos haya
+                $entradas[] = '<br><h2 class="text-decoration-underline">'. $elem['titulo'] .'</h2>
+                                <p>'. $elem['descripcion'] .'</p>';
+            }
+        }
+
+    }else{
+        echo "Error en la conexion";
+    }  
+
 ?>
 
 <!DOCTYPE html>
@@ -26,7 +57,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="index.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js"></script> 
 </head>
@@ -40,6 +70,7 @@
                         <strong>Usuario registrado con exito!</strong>
                     </div>';
             }
+            unset($_SESSION["sign_in"]);
         }
     ?>
 
@@ -48,18 +79,11 @@
         <nav class="navbar navbar-expand-sm bg-light navbar-light">
             <div class="container-fluid">
                 <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">PS5</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Switch</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Xbox SX/S</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">PC</a>
-                    </li>
+                    <?php
+                        for($i = 0 ; $i < count($categorias) ; $i++){
+                            echo $categorias[$i];
+                        }
+                    ?>
                 </ul>
             </div>
         </nav>
@@ -71,7 +95,13 @@
                 if(isset($_SESSION['log_in'])){
                     if($_SESSION['log_in']){
                         echo "Logeado como " . $_SESSION['log_in'];
-                        echo "<br><a href=logout.php>Cerrar Sesion</a>";
+                        echo "<br><a href=logout.php>Cerrar Sesion</a><br>";
+                    }
+                }
+
+                if(isset($entradas)){
+                    for($i = 0 ; $i < count($entradas) ; $i++){
+                        echo $entradas[$i];
                     }
                 }
             ?>
