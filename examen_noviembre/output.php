@@ -31,7 +31,7 @@
 
         //VALIDACION DIRECCION
         $direccion = quitarCaracteres($_REQUEST["direccion"]);
-        if(empty($direccion) || (preg_match('/[^a-z A-Z0-9º]/', $direccion))){
+        if(empty($direccion) || (preg_match('/[^a-z A-Z0-9º\/]/', $direccion))){
             echo '<p style="color:red;">error en la direccion</p>';
             $error = true;
         }else{
