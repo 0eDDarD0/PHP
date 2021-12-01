@@ -1,0 +1,11 @@
+@keyframes shadow {
+    from{box-shadow: 0;}
+    to{box-shadow: grey 2px 2px 5px, grey -2px -2px 5px;}
+}
+
+.entrada:hover{
+    animation-name: shadow;
+    animation-duration: 0.3s;
+    animation-fill-mode: forwards;
+    border-radius: 5px;
+}

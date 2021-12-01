@@ -1,5 +1,5 @@
 <?php
-    include './modules/utilities.php';
+    include '../modules/utilities.php';
     session_start();
 
     if($_SERVER["REQUEST_METHOD"] == "POST"){
@@ -23,23 +23,23 @@
                 if(password_verify($contrasenia, $select->fetch(PDO::FETCH_ASSOC)['password'])){
                     //SE HA LOGEADO CORRECTAMENTE Y SE CREA LA SESION
                     $_SESSION["log_in"] = $correo;
-                    header('Location: index.php');
+                    header('Location: ../index.php');
                 }else{
                     //ERROR EN LAS CREDENCIALES
                     $_SESSION["error_credenciales"] = 1;
-                    header('Location: index.php');
+                    header('Location: ../index.php');
                 }
             }else{
                 //NO EXISTE EL CORREO
                 $_SESSION["correo_no_registrado"] = 1;
-                header('Location: index.php');
+                header('Location: ../index.php');
             }
 
             $db = NULL;
             unset($db);
         }catch(PDOException $e){
             echo 'Error al conectar con la base de datos ' . $e->getMessage();
-            echo "<br><a href='index.php'>Volver al inicio</a>";
+            echo "<br><a href='../index.php'>Volver al inicio</a>";
         }
     }
 

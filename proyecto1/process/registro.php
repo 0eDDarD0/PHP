@@ -1,5 +1,5 @@
 <?php
-    include './modules/utilities.php';
+    include '../modules/utilities.php';
     session_start();
 
     if($_SERVER["REQUEST_METHOD"] == "POST"){
@@ -31,7 +31,7 @@
 
 
         if(isset($_SESSION["error_nombre"]) || isset($_SESSION["error_apellidos"]) || isset($_SESSION["error_correo"]) || isset($_SESSION["error_contrasenia"])){
-           header('Location: index.php');
+           header('Location: ../index.php');
         }else{
             $con = 'mysql:dbname=proyecto1;host=localhost;charset=utf8';
             try{
@@ -47,18 +47,18 @@
                 $ins->execute();
                 if($ins){
                     $_SESSION['sign_in'] = 1;
-                    header('Location: index.php');
+                    header('Location: ../index.php');
                 }else{
                     //GESTION DE CORREO REPETIDO
                     $_SESSION["correo_existe"] = 1;
-                    header('Location: index.php');
+                    header('Location: ../index.php');
                 }
         
                 $db = NULL;
                 unset($db);
             }catch(PDOException $e){
                 echo 'Error al conectar con la base de datos ' . $e->getMessage();
-                echo "<a href='index.php'>Volver al inicio</a>";
+                echo "<a href='../index.php'>Volver al inicio</a>";
             }
         }
     }

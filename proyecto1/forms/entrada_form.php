@@ -1,12 +1,13 @@
 <?php
-    include './modules/utilities.php';
+    include '../modules/utilities.php';
+    $con = 'mysql:dbname=proyecto1;host=localhost;charset=utf8';
     session_start();
 
     if($_SERVER["REQUEST_METHOD"] == "POST"){
         //CORREO USUARIO
         $usuario = $_SESSION["log_in"];
         //ID CATEGORIA
-        $categoria = $_REQUEST["categoria"];
+        $categoria = $_REQUEST["categoria"][0];
         //VALIDACION TITULO
         $titulo = limpiaChar($_REQUEST["titulo"]);
         if(empty($titulo)){
@@ -19,44 +20,60 @@
         }
 
 
-        
-        $con = 'mysql:dbname=proyecto1;host=localhost;charset=utf8';
-        try{
-            $db = new PDO($con, 'fer', 'root');
+        if(@!$_SESSION["error_descripcion"] || @!$_SESSION["error_titulo"]){
+            try{
+                $db = new PDO($con, 'fer', 'root');
 
-            //OBTENCION DE LA ID DE USUARIO
-            $sel = $db->prepare("SELECT id FROM usuarios where email=:correo");
-            $sel->bindValue(':correo', $usuario, PDO::PARAM_STR);
-            $sel->execute();
-            $id = $sel->fetch()['id'];
-            if(!$sel){
-                //ERROR EN LA SELECCION
+                //COMPROBAMOS SI ESTAMOS MODIFICANDO O INSERTANDO UNA ENTRADA
+                if(isset($_GET['mod'])){
+                    $upd = $db->prepare('UPDATE entradas set categoria_id=:categoria, titulo=:titulo, descripcion=:descripcion where id=:id');
+                    $upd->bindParam(':id', $_GET['mod'], PDO::PARAM_STR);
+                    $upd->bindParam(':categoria', $categoria, PDO::PARAM_STR);
+                    $upd->bindParam(':titulo', $titulo, PDO::PARAM_STR);
+                    $upd->bindParam(':descripcion', $descripcion, PDO::PARAM_STR);
+                    $upd->execute();
+                    if(!$upd){
+                        //ERROR EN LA ACTUALIZACION
+                        $_SESSION["error_sql"] = 1;
+                    }else{
+                        header('Location: ../entrada.php?id=' . $_GET['mod']);
+                    }
+                }else{
+                    //OBTENCION DE LA ID DE USUARIO
+                    $sel = $db->prepare("SELECT id FROM usuarios where email=:correo");
+                    $sel->bindValue(':correo', $usuario, PDO::PARAM_STR);
+                    $sel->execute();
+                    $id = $sel->fetch()['id'];
+                    if(!$sel){
+                        //ERROR EN LA SELECCION
+                        $_SESSION["error_sql"] = 1;
+                    }
+
+
+                    //INSERCION DE LA ENTRADA
+                    $ins = $db->prepare("INSERT into entradas VALUES(null, :usuario, :categoria, :titulo, :descripcion, CURRENT_TIMESTAMP())");
+                    $ins->bindValue(':usuario', $id);
+                    $ins->bindValue(':categoria', $categoria, PDO::PARAM_INT);
+                    $ins->bindValue(':titulo', $titulo, PDO::PARAM_STR);
+                    $ins->bindValue(':descripcion', $descripcion, PDO::PARAM_STR);
+                    $ins->execute();
+                    if(!$ins){
+                        //ERROR EN LA INSERCION
+                        $_SESSION["error_sql"] = 1;
+                    }else{
+                        $_SESSION["new_entrada"] = 1;
+                    }
+                }
+
+            
+                $db = NULL;
+                unset($db);
+            }catch(PDOException $e){
+                //ERROR EN LA CONEXION
                 $_SESSION["error_sql"] = 1;
+                echo $e->getMessage();
             }
-
-
-            //INSERCION DE LA ENTRADA
-            $ins = $db->prepare("INSERT into entradas VALUES(null, :usuario, :categoria, :titulo, :descripcion, CURRENT_TIMESTAMP())");
-            $ins->bindValue(':usuario', $id);
-            $ins->bindValue(':categoria', $categoria, PDO::PARAM_INT);
-            $ins->bindValue(':titulo', $titulo, PDO::PARAM_STR);
-            $ins->bindValue(':descripcion', $descripcion, PDO::PARAM_STR);
-            $ins->execute();
-            if(!$ins){
-                //ERROR EN LA INSERCION
-                $_SESSION["error_sql"] = 1;
-            }else{
-                $_SESSION["new_entrada"] = 1;
-            }
-        
-            $db = NULL;
-            unset($db);
-        }catch(PDOException $e){
-            //ERROR EN LA CONEXION
-            $_SESSION["error_sql"] = 1;
-            echo $e->getMessage();
-        }
-        
+        }        
     }
 
 
@@ -67,6 +84,20 @@
 
         //CARGAMOS TODAS LAS CATEGORIAS
         $categorias = getCategorias($db);
+
+        //SI ESTAMOS ALTERANDO UNA ENTRADA RECOGEMOS SUS DATOS
+        if(isset($_GET['id'])){
+            if($_GET['id']){
+                $sel = $db->prepare("SELECT * FROM entradas where id=:id");
+                $sel->bindValue(':id', $_GET['id']);
+                $sel->execute();
+                $modificar = $sel->fetch();
+                if(!$sel){
+                    //ERROR EN LA SELECCION
+                    $_SESSION["error_sql"] = 1;
+                }
+            }
+        }
 
         $db = NULL;
         unset($db);
@@ -99,13 +130,13 @@
     ?>
 
     <header class="m-5 p-5 border border-2 bg-light">
-        <a class="text-decoration-none link-dark" href="index.php"><h1>Mi blog de videojuegos</h1></a>
+        <a class="text-decoration-none link-dark" href="../index.php"><h1>Mi blog de videojuegos</h1></a>
         <nav class="navbar navbar-expand-sm bg-light navbar-light">
             <div class="container-fluid">
                 <ul class="navbar-nav">
                     <?php //LISTADO DE CATEGORIAS
                         foreach($categorias as $id => $nombre){
-                            echo '<li class="nav-item"><a class="nav-link" href=index.php?cat='. $id .'>'. $nombre .'</a></li>';
+                            echo '<li class="nav-item"><a class="nav-link" href=../index.php?cat='. $id .'>'. $nombre .'</a></li>';
                         }
                     ?>
                 </ul>
@@ -126,7 +157,7 @@
                 }
             ?>
 
-            <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) ?>" name="new_entrada" class="m-2">
+            <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) . isset($modificar) ? "?mod=".$modificar['id'] : "" ?>" name="new_entrada" class="m-2">
                 <label class="form-label" for="categoria">Categoria:<br>
                     <select name="categoria[]" id="categoria">
                         <?php //LISTADO DE CATEGORIAS
@@ -138,7 +169,7 @@
                 </label><br>
 
                 <label class="form-label" for="titulo">Titulo:<br>
-                    <input type="text" name="titulo" class="form-control">
+                    <input type="text" name="titulo" class="form-control" value="<?php echo isset($modificar) ? $modificar['titulo'] : "" ?>">
                 </label><br>
                 <?php //ERROR EN EL TITULO
                     if(isset($_SESSION["error_titulo"])){
@@ -150,7 +181,7 @@
                 ?>
 
                 <label for="descripcion">Cuerpo:<br>
-                    <textarea style="resize: none;" rows="20" cols="153" class="fuid form-control" name="descripcion"></textarea>
+                    <textarea style="resize: none;" rows="20" cols="170" class="fuid form-control" name="descripcion"><?php echo isset($modificar) ? $modificar['descripcion'] : "" ?></textarea>
                 </label>
                 <?php //ERROR EN EL TITULO
                     if(isset($_SESSION["error_descripcion"])){

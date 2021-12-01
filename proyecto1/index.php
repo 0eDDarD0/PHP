@@ -52,7 +52,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js"></script> 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="./styles/entrada.css" rel="stylesheet">
 </head>
 <body class="bg-secondary">
 
@@ -85,23 +86,25 @@
 
     <div class="row m-5">
         <article class="<?php echo $cuerpo ?> border border-2 bg-light">
-            <?php //LISTADO DE CONTENIDOS SI SE HA LOGUEADO
+            <?php //LISTADO DE ENTRADAS SI SE HA LOGUEADO
                 if(isset($_SESSION['log_in'])){
                     if(isset($entradas)){
-                        foreach($entradas as $titulo => $descripcion){
-                            echo '<br><h2 class="text-decoration-underline">'. $titulo .'</h2>
-                                <p>'. $descripcion .'</p>'; ;
+                        foreach($entradas as $id => $datos){
+                            echo '<br><a class="text-dark text-decoration-none" href=entrada.php?id='. $id .'>
+                                <div class="entrada"><h2 class="text-decoration-underline m-2">'. $datos['titulo'] .'</h2>
+                                <p class="m-1">'. substr($datos['descripcion'], 0, 500) .'...</p></div></a>';
                         }
                     }else{
                         //SI NO SE HA SELECCIONADO UNA CATEGORIA MUESTRA EL MENU DE ACCION
-                        echo '<a href="new_entrada.php"><button type="button" class="mt-4 mb-2 container-fluid btn btn-primary">Crear Entrada</button></a>
-                            <a href="new_categoria.php"><button type="button" class="mt-2 mb-2 container-fluid btn btn-primary">Crear Categoria</button></a>
-                            <a href="#"><button type="button" class="mt-2 mb-5 container-fluid btn btn-warning">Ajustes de Usuario</button></a>';
+                        echo '<a href="todas.php"><button type="button" class="mt-4 mb-2 container-fluid btn btn-success">Ver todas las Entradas</button></a>
+                            <a href="forms/entrada_form.php"><button type="button" class="mt-2 mb-2 container-fluid btn btn-primary">Crear Entrada</button></a>
+                            <a href="forms/categoria_form.php"><button type="button" class="mt-2 mb-2 container-fluid btn btn-primary">Crear Categoria</button></a>
+                            <a href="forms/ajustes_form.php"><button type="button" class="mt-2 mb-5 container-fluid btn btn-warning">Ajustes de Usuario</button></a>';
                     }
 
                     if($_SESSION['log_in']){
                         echo "<br>Logeado como " . $_SESSION['log_in'];
-                        echo "<br><a href=logout.php>Cerrar Sesion</a><br>";
+                        echo "<br><a href=process/logout.php>Cerrar Sesion</a><br>";
                     }
                 }
             ?>
@@ -112,7 +115,7 @@
         <aside class="<?php echo $aside ?>">
             <div class="row border border-2 bg-light">
                 <h3 class="text-center">Log In</h3>
-                <form name="login" class="p-3" action="logeo.php" method="post">
+                <form name="login" class="p-3" action="process/logeo.php" method="post">
                     <label for="correo">Correo:<br>
                         <input type="mail" name="correo" id="correo">
                     </label><br>
@@ -141,7 +144,7 @@
 
             <div class="row border border-2 bg-light">
                 <h3 class="text-center">Sign In</h3>
-                <form name="signin" class="p-3" action="registro.php" method="post">
+                <form name="signin" class="p-3" action="process/registro.php" method="post">
                     <label for="nombre">Nombre:<br>
                         <input type="text" name="nombre" id="nombre">
                     </label><br>
