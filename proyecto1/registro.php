@@ -1,32 +1,29 @@
 <?php
+    include './modules/utilities.php';
     session_start();
 
     if($_SERVER["REQUEST_METHOD"] == "POST"){
 
-        function quitarCaracteres($a){
-            return stripslashes(trim(htmlspecialchars($a)));
-        }
-
         //VALIDACION NOMBRE
-        $nombre = quitarCaracteres($_REQUEST["nombre"]);
+        $nombre = limpiaChar($_REQUEST["nombre"]);
         if(empty($nombre) || preg_match('/[^a-z A-Z0]/', $nombre)){
             $_SESSION["error_nombre"] = true;
         }
 
         //VALIDACION APELLIDOS
-        $apellidos = quitarCaracteres($_REQUEST["apellidos"]);
+        $apellidos = limpiaChar($_REQUEST["apellidos"]);
         if(empty($apellidos) || preg_match('/[^a-z A-Z0]/', $apellidos)){
             $_SESSION["error_apellidos"] = true;
         }
 
         //VALIDACION CORREO
-        $correo = quitarCaracteres($_REQUEST["correo"]);
+        $correo = limpiaChar($_REQUEST["correo"]);
         if(!filter_var($correo, FILTER_VALIDATE_EMAIL)){
             $_SESSION["error_correo"] = true;
         }
 
         //VALIDACION CONTRASEÑA
-        $contrasenia = quitarCaracteres($_REQUEST["contrasenia"]);
+        $contrasenia = limpiaChar($_REQUEST["contrasenia"]);
         if(empty($contrasenia) || preg_match('/[^a-zA-Z0-9_\-!¡?¿+*]/', $contrasenia)){
             $_SESSION["error_contrasenia"] = true;
         }
@@ -36,17 +33,19 @@
         if(isset($_SESSION["error_nombre"]) || isset($_SESSION["error_apellidos"]) || isset($_SESSION["error_correo"]) || isset($_SESSION["error_contrasenia"])){
            header('Location: index.php');
         }else{
-            $con = @mysqli_connect('localhost', 'fer', 'root', 'proyecto1');
-            if(!mysqli_connect_errno()){
-                mysqli_query($con, "SET NAME 'utf-8'"); //nos aseguramos de que la codificacion sea utf 8
-                $nombre = mysqli_real_escape_string($con, $nombre);
-                $apellidos = mysqli_real_escape_string($con, $apellidos);
-                $correo = mysqli_real_escape_string($con, $correo);
-                $contrasenia = password_hash(mysqli_real_escape_string($con, $contrasenia), PASSWORD_BCRYPT, ['cost'=>4]);
+            $con = 'mysql:dbname=proyecto1;host=localhost;charset=utf8';
+            try{
+                $db = new PDO($con, 'fer', 'root');
 
-                //INSERT
-                $insert = mysqli_query($con, 'INSERT INTO usuarios values(null, "'.$nombre.'", "'.$apellidos.'", "'.$correo.'", "'.$contrasenia.'", CURRENT_TIMESTAMP());');
-                if($insert){
+                $contrasenia = password_hash( $contrasenia, PASSWORD_BCRYPT, ['cost'=>4]);
+
+                $ins = $db->prepare("INSERT into usuarios VALUES(null, :nombre, :apellidos, :correo, :contrasenia, CURRENT_TIMESTAMP())");
+                $ins->bindValue(':nombre', $nombre, PDO::PARAM_STR);
+                $ins->bindValue(':apellidos', $apellidos, PDO::PARAM_STR);
+                $ins->bindValue(':correo', $correo, PDO::PARAM_STR);
+                $ins->bindValue(':contrasenia', $contrasenia, PDO::PARAM_STR);
+                $ins->execute();
+                if($ins){
                     $_SESSION['sign_in'] = 1;
                     header('Location: index.php');
                 }else{
@@ -54,9 +53,12 @@
                     $_SESSION["correo_existe"] = 1;
                     header('Location: index.php');
                 }
-                
-            }else{
-                echo "Error en la conexion";
+        
+                $db = NULL;
+                unset($db);
+            }catch(PDOException $e){
+                echo 'Error al conectar con la base de datos ' . $e->getMessage();
+                echo "<a href='index.php'>Volver al inicio</a>";
             }
         }
     }

@@ -14,13 +14,13 @@
         //    print "nota: ". $usu['nota'] ."<br>";
         //}
         //SELECT PREPARADO (SI)
-        $preparada = $db->prepare('select nota from nota where color=:color');
-        $preparada->execute(array(':color' => "rojo"));
-        echo "<br>Notas rojas: ". $preparada->rowCount() ."<br>";
-        //while($fila = $preparada->fetch(PDO::FETCH_ASSOC)){
+        $select = $db->prepare('select nota from nota where color=:color');
+        $select->execute(array(':color' => "rojo"));
+        echo "<br>Notas rojas: ". $select->rowCount() ."<br>";
+        //while($fila = $select->fetch(PDO::FETCH_ASSOC)){
         //    echo $fila["nota"] ."<br>";
         //}
-        foreach ($preparada as $usu){
+        foreach ($select as $usu){
             print "Nota: ". $usu['nota'] ."<br>";
         }
 
@@ -43,6 +43,10 @@
             print_r($db->errorInfo());
         }
         echo "ID de fila insertada: ". $db->lastInsertId() ."<br>";
+        //INSERT PREPARADO CON OBJETOS
+        //$ins = $db->prepare("INSERT into nota VALUES(:id, :nota, :color)");
+        //$ins->execute((array) $objeto); //objeto debe tener los atributos con los mismos nombres que en la consulta
+        //el casting de un objeto a un array lo convierte en un array asociativo
 
 
         //BORRAR CONEXION

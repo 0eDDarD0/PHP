@@ -1,4 +1,5 @@
 <?php
+    include './modules/utilities.php';
     session_start();
 
     //ELEMENTOS A CARGAR SEGUN SI HAY LOGEO
@@ -20,33 +21,26 @@
 
 
     //ELEMENTOS A CARGAR EN LA PAGINA
-    $con = @mysqli_connect('localhost', 'fer', 'root', 'proyecto1');
-    if(!mysqli_connect_errno()){
-        mysqli_query($con, "SET NAME 'utf-8'"); //nos aseguramos de que la codificacion sea utf 8
-        $categorias = [];
+    $con = 'mysql:dbname=proyecto1;host=localhost;charset=utf8';
+    try{
+        $db = new PDO($con, 'fer', 'root');
 
-        ////RECOGEMOS TODAS LAS CATEGORIAS A CARGAR DEL NAV
-        $select = mysqli_query($con, 'SELECT * FROM categorias;');
-        while($elem = mysqli_fetch_assoc($select)){  //a la variable se le podra hacer fetch tantas veces como elementos haya
-            $categorias[] = '<li class="nav-item"><a class="nav-link" href=index.php?cat='. $elem['id'] .'>'. $elem['nombre'] .'</a></li>';
-        }
+        //CARGAMOS TODAS LAS CATEGORIAS
+        $categorias = getCategorias($db);
         
 
-        //ENTRADAS A CARGAR SI SE HA ENTRADO EN ALGUNA
+        //ENTRADAS A CARGAR SI SE HA ENTRADO EN ALGUNA CATEGORIA
         if(isset($_GET['cat'])){
-            $cat = $_GET['cat'];
-            $entradas = [];
-
-            $select = mysqli_query($con, 'SELECT * FROM entradas where categoria_id='. $cat .';');
-            while($elem = mysqli_fetch_assoc($select)){  //a la variable se le podra hacer fetch tantas veces como elementos haya
-                $entradas[] = '<br><h2 class="text-decoration-underline">'. $elem['titulo'] .'</h2>
-                                <p>'. $elem['descripcion'] .'</p>';
-            }
+            $entradas = getEntradas($db, $_GET['cat']);
         }
 
-    }else{
-        echo "Error en la conexion";
-    }  
+        //BORRAR CONEXION
+        $db = NULL;
+        unset($db);
+        //MANEJO DE ERRORES
+    }catch(PDOException $e){
+        echo 'Error al conectar con la base de datos ' . $e->getMessage();
+    }
 
 ?>
 
@@ -62,7 +56,7 @@
 </head>
 <body class="bg-secondary">
 
-    <?php
+    <?php //MENSAJE DE EXITO EN EL REGISTRO
         if(isset($_SESSION['sign_in'])){
             if($_SESSION['sign_in']){
                 echo '<div class="alert alert-success alert-dismissible">
@@ -75,13 +69,13 @@
     ?>
 
     <header class="m-5 p-5 border border-2 bg-light">
-        <h1>Mi blog de videojuegos</h1>
+        <a class="text-decoration-none link-dark" href="index.php"><h1>Mi blog de videojuegos</h1></a>
         <nav class="navbar navbar-expand-sm bg-light navbar-light">
             <div class="container-fluid">
                 <ul class="navbar-nav">
-                    <?php
-                        for($i = 0 ; $i < count($categorias) ; $i++){
-                            echo $categorias[$i];
+                    <?php //LISTADO DE CATEGORIAS
+                        foreach($categorias as $id => $nombre){
+                            echo '<li class="nav-item"><a class="nav-link" href=index.php?cat='. $id .'>'. $nombre .'</a></li>';
                         }
                     ?>
                 </ul>
@@ -91,17 +85,23 @@
 
     <div class="row m-5">
         <article class="<?php echo $cuerpo ?> border border-2 bg-light">
-            <?php
+            <?php //LISTADO DE CONTENIDOS SI SE HA LOGUEADO
                 if(isset($_SESSION['log_in'])){
-                    if($_SESSION['log_in']){
-                        echo "Logeado como " . $_SESSION['log_in'];
-                        echo "<br><a href=logout.php>Cerrar Sesion</a><br>";
+                    if(isset($entradas)){
+                        foreach($entradas as $titulo => $descripcion){
+                            echo '<br><h2 class="text-decoration-underline">'. $titulo .'</h2>
+                                <p>'. $descripcion .'</p>'; ;
+                        }
+                    }else{
+                        //SI NO SE HA SELECCIONADO UNA CATEGORIA MUESTRA EL MENU DE ACCION
+                        echo '<a href="new_entrada.php"><button type="button" class="mt-4 mb-2 container-fluid btn btn-primary">Crear Entrada</button></a>
+                            <a href="new_categoria.php"><button type="button" class="mt-2 mb-2 container-fluid btn btn-primary">Crear Categoria</button></a>
+                            <a href="#"><button type="button" class="mt-2 mb-5 container-fluid btn btn-warning">Ajustes de Usuario</button></a>';
                     }
-                }
 
-                if(isset($entradas)){
-                    for($i = 0 ; $i < count($entradas) ; $i++){
-                        echo $entradas[$i];
+                    if($_SESSION['log_in']){
+                        echo "<br>Logeado como " . $_SESSION['log_in'];
+                        echo "<br><a href=logout.php>Cerrar Sesion</a><br>";
                     }
                 }
             ?>
@@ -119,7 +119,7 @@
                     <label for="contrasenia">Contraseña:<br>
                         <input type="password" name="contrasenia" id="contrasenia">
                     </label><br>
-                    <?php
+                    <?php //ERRORES EN LOGIN FORM
                         if(isset($_SESSION["error_credenciales"])){
                             if($_SESSION["error_credenciales"]){
                                 echo '<p style="color:red;">Las credenciales no son correctas</p>';
@@ -145,7 +145,7 @@
                     <label for="nombre">Nombre:<br>
                         <input type="text" name="nombre" id="nombre">
                     </label><br>
-                    <?php
+                    <?php //ERRORES EN SIGN IN FORM
                         if(isset($_SESSION["error_nombre"])){
                             if($_SESSION["error_nombre"]){
                                 echo '<p style="color:red;">Error en el nombre</p>';
