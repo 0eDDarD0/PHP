@@ -1,4 +1,9 @@
 <?php
+    /*
+    ESTA PAGINA REALIZA:
+        INICIO DE SESION (LOGEO)
+    */
+
     include '../modules/utilities.php';
     session_start();
 
@@ -6,8 +11,10 @@
         
         //VALIDACION CORREO
         $correo = limpiaChar($_REQUEST["correo"]);
+
         //VALIDACION CONTRASEÑA
         $contrasenia = limpiaChar($_REQUEST["contrasenia"]);
+        
 
         $con = 'mysql:dbname=proyecto1;host=localhost;charset=utf8';
         try{

@@ -1,4 +1,9 @@
 <?php
+    /*
+    ESTA PAGINA REALIZA:
+        INSERCION DE USUARIOS (REGISTRO)
+    */
+
     include '../modules/utilities.php';
     session_start();
 
@@ -29,7 +34,7 @@
         }
 
 
-
+        //COMPRUEBA QUE NO HAYA ERRORES EN LOS CAMPOS
         if(isset($_SESSION["error_nombre"]) || isset($_SESSION["error_apellidos"]) || isset($_SESSION["error_correo"]) || isset($_SESSION["error_contrasenia"])){
            header('Location: ../index.php');
         }else{
@@ -37,8 +42,10 @@
             try{
                 $db = new PDO($con, 'fer', 'root');
 
+                //ENCRIPTAMOS LA CONTRASEÑA
                 $contrasenia = password_hash( $contrasenia, PASSWORD_BCRYPT, ['cost'=>4]);
 
+                //INSERCION
                 $ins = $db->prepare("INSERT into usuarios VALUES(null, :nombre, :apellidos, :correo, :contrasenia, CURRENT_TIMESTAMP())");
                 $ins->bindValue(':nombre', $nombre, PDO::PARAM_STR);
                 $ins->bindValue(':apellidos', $apellidos, PDO::PARAM_STR);
@@ -46,6 +53,7 @@
                 $ins->bindValue(':contrasenia', $contrasenia, PDO::PARAM_STR);
                 $ins->execute();
                 if($ins){
+                    //REGISTRO CON EXITO
                     $_SESSION['sign_in'] = 1;
                     header('Location: ../index.php');
                 }else{

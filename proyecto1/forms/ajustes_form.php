@@ -1,4 +1,10 @@
 <?php
+    /*
+    ESTA PAGINA REALIZA:
+        FORMULARIO DE AJUSTES DE USUARIOS
+        MODIFICACION DE AJUSTES DE USUARIOS
+    */
+
     include '../modules/utilities.php';
     session_start();
 
@@ -26,12 +32,12 @@
             $_SESSION["error_contrasenia"] = true;
         }
 
+        $con = 'mysql:dbname=proyecto1;host=localhost;charset=utf8';
+        try{
+            $db = new PDO($con, 'fer', 'root');
 
-        if(!isset($_SESSION["error_nombre"]) || !isset($_SESSION["error_apellidos"]) || !isset($_SESSION["error_correo"]) || !isset($_SESSION["error_contrasenia"])){
-            $con = 'mysql:dbname=proyecto1;host=localhost;charset=utf8';
-            try{
-                $db = new PDO($con, 'fer', 'root');
-
+            //ANTES DE ACTUALIZAR EN LA BASE DE DATOS COMPRUEBA QUE NO HAY ERRORES
+            if(!isset($_SESSION["error_nombre"]) || !isset($_SESSION["error_apellidos"]) || !isset($_SESSION["error_correo"]) || !isset($_SESSION["error_contrasenia"])){
                 //ACTUALIZACION DE NOMBRE
                 if(!empty($nombre)){
                     $upd = $db->prepare('UPDATE usuarios set nombre=:nuevo where email=:correo');
@@ -39,12 +45,11 @@
                     $upd->bindValue(':correo', $_SESSION["log_in"], PDO::PARAM_STR);
                     $upd->execute();
                     if($upd){
-                        $_SESSION["ajustes"] = 1;
+                        $_SESSION["ajustes_form"] = 1;
                     }else{
                         $_SESSION["error_sql"] = 1;
                     }
                 }
-
 
                 //ACTUALIZACION DE APELLIDOS
                 if(!empty($apellidos)){
@@ -53,12 +58,11 @@
                     $upd->bindValue(':correo', $_SESSION["log_in"], PDO::PARAM_STR);
                     $upd->execute();
                     if($upd){
-                        $_SESSION["ajustes"] = 1;
+                        $_SESSION["ajustes_form"] = 1;
                     }else{
                         $_SESSION["error_sql"] = 1;
                     }
                 }
-
 
                 //ACTUALIZACION DE CONTRASEÑA
                 if(!empty($contrasenia)){
@@ -68,7 +72,7 @@
                     $upd->bindValue(':correo', $_SESSION["log_in"], PDO::PARAM_STR);
                     $upd->execute();
                     if($upd){
-                        $_SESSION["ajustes"] = 1;
+                        $_SESSION["ajustes_form"] = 1;
                     }else{
                         $_SESSION["error_sql"] = 1;
                     }
@@ -89,7 +93,7 @@
                         $upd->bindValue(':viejo', $_SESSION["log_in"], PDO::PARAM_STR);
                         $upd->execute();
                         if($upd){
-                            $_SESSION["ajustes"] = 1;
+                            $_SESSION["ajustes_form"] = 1;
                             $_SESSION["log_in"] = $correo;
                         }else{
                             $_SESSION["error_sql"] = 1;
@@ -99,32 +103,22 @@
                         $_SESSION["correo_existe"] = 1;
                     }
                 }
+            }
                 
-            
-                $db = NULL;
-                unset($db);
-            }catch(PDOException $e){
-                //ERROR EN LA CONEXION
-                $_SESSION["error_sql"] = 1;
-                echo $e->getMessage();
-            }         
-        }        
+            //PARTE DE BORRADO DE CONEXION Y CATCH  
+            $db = NULL;
+            unset($db);
+        }catch(PDOException $e){
+            //ERROR EN LA CONEXION
+            $_SESSION["error_sql"] = 1;
+            echo $e->getMessage();
+        }              
     }
 
 
-    //CARGAMOS LAS CATEGORIAS DEL NAV
-    $con = 'mysql:dbname=proyecto1;host=localhost;charset=utf8';
-    try{
-        $db = new PDO($con, 'fer', 'root');
+    //CARGAMOS TODAS LAS CATEGORIAS
+    $categorias = getCategorias('mysql:dbname=proyecto1;host=localhost;charset=utf8');
 
-        //CARGAMOS TODAS LAS CATEGORIAS
-        $categorias = getCategorias($db);
-
-        $db = NULL;
-        unset($db);
-    }catch(PDOException $e){
-        echo 'Error al conectar con la base de datos ' . $e->getMessage();
-    }
 ?>
 
 <!DOCTYPE html>
@@ -137,25 +131,31 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
+
+<!---------------------------------------------------PAGINA--------------------------------------------------->
 <body class="bg-secondary">
-    <?php //MENSAJE DE EXITO DE CAMBIO DE DATOS
-        if(isset($_SESSION['ajustes'])){
-            if($_SESSION['ajustes']){
+
+    <!--MENSAJE DE EXITO EN LA ACTUALIZACION-->
+    <?php
+        if(isset($_SESSION['ajustes_form'])){
+            if($_SESSION['ajustes_form']){
                 echo '<div class="alert alert-success alert-dismissible">
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         <strong>Datos actualizados correctamente</strong>
                     </div>';
             }
-            unset($_SESSION["ajustes"]);
+            unset($_SESSION["ajustes_form"]);
         }
     ?>
 
+    <!----------------------------------CABECERA---------------------------------->
     <header class="m-5 p-5 border border-2 bg-light">
         <a class="text-decoration-none link-dark" href="../index.php"><h1>Mi blog de videojuegos</h1></a>
         <nav class="navbar navbar-expand-sm bg-light navbar-light">
             <div class="container-fluid">
                 <ul class="navbar-nav">
-                    <?php //LISTADO DE CATEGORIAS
+                    <!--MAQUETAMOS LAS CATEGORIAS EN EL NAV-->
+                    <?php
                         foreach($categorias as $id => $nombre){
                             echo '<li class="nav-item"><a class="nav-link" href=../index.php?cat='. $id .'>'. $nombre .'</a></li>';
                         }
@@ -178,11 +178,14 @@
                 }
             ?>
 
-                <form name="ajustes" class="p-3" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) ?>" method="post">
+                <!----------FORMULARIO DE AJUSTES DE USUSARIO---------->
+                <form name="ajustes_form" class="p-3" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) ?>" method="post">
+                    <!--NOMBRE-->
                     <label for="nombre">Nombre:<br>
                         <input type="text" name="nombre" id="nombre">
                     </label><br>
-                    <?php //ERRORES EN SIGN IN FORM
+                    <!--ERROR NOMBRE-->
+                    <?php
                         if(isset($_SESSION["error_nombre"])){
                             if($_SESSION["error_nombre"]){
                                 echo '<p style="color:red;">Error en el nombre</p>';
@@ -190,10 +193,12 @@
                             unset($_SESSION["error_nombre"]);
                         }
                     ?>
-
+                    
+                    <!--APELLIDOS-->
                     <label for="apellidos">Apellidos:<br>
                         <input type="text" name="apellidos" id="apellidos">
                     </label><br>
+                    <!--ERROR APELLIDOS-->
                     <?php
                         if(isset($_SESSION["error_apellidos"])){
                             if($_SESSION["error_apellidos"]){
@@ -203,9 +208,11 @@
                         }
                     ?>
 
+                    <!--CORREO-->
                     <label for="correo">Correo:<br>
                         <input type="mail" name="correo" id="correo">
                     </label><br>
+                    <!--ERROR CORREO-->
                     <?php
                         if(isset($_SESSION["error_correo"])){
                             if($_SESSION["error_correo"]){
@@ -221,9 +228,11 @@
                         }
                     ?>
 
+                    <!--CONTRASEÑA-->
                     <label for="contrasenia">Contraseña:<br>
                         <input type="password" name="contrasenia" id="contrasenia">
                     </label><br>
+                    <!--ERROR CONTRASEÑA-->
                     <?php
                         if(isset($_SESSION["error_contrasenia"])){
                             if($_SESSION["error_contrasenia"]){
