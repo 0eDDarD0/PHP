@@ -152,19 +152,28 @@
 
     <!----------------------------------CABECERA---------------------------------->
     <header class="m-5 p-5 border border-2 bg-light">
-        <a class="text-decoration-none link-dark" href="../index.php"><h1>Mi blog de videojuegos</h1></a>
-        <nav class="navbar navbar-expand-sm bg-light navbar-light">
-            <div class="container-fluid">
-                <ul class="navbar-nav">
-                    <!--MAQUETAMOS LAS CATEGORIAS EN EL NAV-->                   
-                    <?php
-                        foreach($categorias as $id => $nombre){
-                            echo '<li class="nav-item"><a class="nav-link" href=../index.php?cat='. $id .'>'. $nombre .'</a></li>';
-                        }
-                    ?>
-                </ul>
-            </div>
-        </nav>
+        <a class="text-decoration-none link-dark" href="index.php"><h1>Mi blog de videojuegos</h1></a>
+        <div class="row">
+            <!-------NAV------->
+            <nav class="col navbar navbar-expand-sm bg-light navbar-light">
+                <div class="container-fluid">
+                    <ul class="navbar-nav">
+                        <!--MAQUETAMOS LAS CATEGORIAS EN EL NAV-->
+                        <?php 
+                            foreach($categorias as $id => $nombre){
+                                echo '<li class="nav-item"><a class="nav-link" href=index.php?cat='. $id .'>'. $nombre .'</a></li>';
+                            }
+                        ?>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-------BARRA DE BUSQUEDA------->
+            <form method="post" action="../search.php" class="col d-flex" style="justify-content: right; align-items:center;">
+                <input style="height: fit-content;" type="text" placeholder="Buscar entrada..." name="search">
+                <input style="height: fit-content;" type="submit" value="Buscar">
+            </form>
+        </div>
     </header>
 
     <!--------------------------CUERPO DE LA PAGINA-------------------------------->
