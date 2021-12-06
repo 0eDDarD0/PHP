@@ -8,7 +8,7 @@
     include '../modules/utilities.php';
     session_start();
 
-    if($_SERVER["REQUEST_METHOD"] == "POST"){
+    if($_SERVER["REQUEST_METHOD"] == "POST"){ //VALIDAMOS TENIENDO EN CUENTA QUE SI UN CAMPO SE DEJA VACIO SIGNIFICA QUE NO SE QUERRA MODIFICAR
         //VALIDACION NOMBRE
         $nombre = limpiaChar($_REQUEST["nombre"]);
         if(preg_match('/[^a-z A-Z0]/', $nombre)){
@@ -121,19 +121,8 @@
 
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js"></script>
-</head>
-
-<!---------------------------------------------------PAGINA--------------------------------------------------->
-<body class="bg-secondary">
+    <!--------------------------HEAD-------------------------------->
+    <?php require_once "../modules/head.php" ?>
 
     <!--MENSAJE DE EXITO EN LA ACTUALIZACION-->
     <?php
@@ -149,17 +138,17 @@
     ?>
 
     <!----------------------------------CABECERA---------------------------------->
-    <header class="m-5 p-5 border border-2 bg-light">
-        <a class="text-decoration-none link-dark" href="index.php"><h1>Mi blog de videojuegos</h1></a>
+    <header class="p-3 bg-dark">
+        <a class="text-decoration-none link-light" href="../index.php"><h1>Mi blog de videojuegos</h1></a>
         <div class="row">
             <!-------NAV------->
-            <nav class="col navbar navbar-expand-sm bg-light navbar-light">
+            <nav class="col navbar navbar-expand-sm bg-dark navbar-dark">
                 <div class="container-fluid">
                     <ul class="navbar-nav">
                         <!--MAQUETAMOS LAS CATEGORIAS EN EL NAV-->
-                        <?php 
+                        <?php
                             foreach($categorias as $id => $nombre){
-                                echo '<li class="nav-item"><a class="nav-link" href=index.php?cat='. $id .'>'. $nombre .'</a></li>';
+                                echo '<li class="nav-item"><a class="nav-link" href=../index.php?cat='. $id .'>'. $nombre .'</a></li>';
                             }
                         ?>
                     </ul>
@@ -167,15 +156,16 @@
             </nav>
 
             <!-------BARRA DE BUSQUEDA------->
-            <form method="post" action="../search.php" class="col d-flex" style="justify-content: right; align-items:center;">
+            <form method="post" action="search.php" class="col d-flex" style="justify-content: right; align-items:center;">
                 <input style="height: fit-content;" type="text" placeholder="Buscar entrada..." name="search">
                 <input style="height: fit-content;" type="submit" value="Buscar">
             </form>
         </div>
     </header>
 
+    <!--------------------------CUERPO DE LA PAGINA------------------------------>
     <div class="row m-5">
-        <article class="col border border-2 bg-light">
+        <article class="col border border-2 bg-dark text-white" style="min-height:369px">
             <h1 class="m-2">Ajustes de usuario</h1>
 
             <?php //MENSAJE DE ERROR EN CASO DE ERROR CON LA BASE DE DATOS
@@ -256,5 +246,9 @@
                 </form>
         </article>
     </div>
+
+    <!--------------------------PIE-------------------------------->
+    <?php require_once "../modules/pie.php" ?>
+
 </body>
 </html>

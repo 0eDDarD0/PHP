@@ -8,7 +8,6 @@
     include './modules/utilities.php';
     session_start();
 
-    //CARGAMOS CONTENIDOS
     $con = 'mysql:dbname=proyecto1;host=localhost;charset=utf8';
     try{
         $db = new PDO($con, 'fer', 'root');
@@ -53,18 +52,8 @@
 
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js"></script>
-</head>
-<!---------------------------------------------------PAGINA--------------------------------------------------->
-<body class="bg-secondary">
+    <!--------------------------HEAD-------------------------------->
+    <?php require_once "./modules/head.php" ?>
 
     <!--MENSAJE DE ERROR EN LA BASE DE DATOS-->
     <?php
@@ -79,15 +68,15 @@
     ?>
 
     <!----------------------------------CABECERA---------------------------------->
-    <header class="m-5 p-5 border border-2 bg-light">
-        <a class="text-decoration-none link-dark" href="index.php"><h1>Mi blog de videojuegos</h1></a>
+    <header class="p-3 bg-dark">
+        <a class="text-decoration-none link-light" href="index.php"><h1>Mi blog de videojuegos</h1></a>
         <div class="row">
             <!-------NAV------->
-            <nav class="col navbar navbar-expand-sm bg-light navbar-light">
+            <nav class="col navbar navbar-expand-sm bg-dark navbar-dark">
                 <div class="container-fluid">
                     <ul class="navbar-nav">
                         <!--MAQUETAMOS LAS CATEGORIAS EN EL NAV-->
-                        <?php 
+                        <?php
                             foreach($categorias as $id => $nombre){
                                 echo '<li class="nav-item"><a class="nav-link" href=index.php?cat='. $id .'>'. $nombre .'</a></li>';
                             }
@@ -97,7 +86,7 @@
             </nav>
 
             <!-------BARRA DE BUSQUEDA------->
-            <form method="post" action="./search.php" class="col d-flex" style="justify-content: right; align-items:center;">
+            <form method="post" action="search.php" class="col d-flex" style="justify-content: right; align-items:center;">
                 <input style="height: fit-content;" type="text" placeholder="Buscar entrada..." name="search">
                 <input style="height: fit-content;" type="submit" value="Buscar">
             </form>
@@ -106,7 +95,7 @@
 
     <!--------------------------CUERPO DE LA PAGINA-------------------------------->
     <div class="row m-5">
-        <article class="col border border-2 bg-light">
+        <article class="col bg-dark text-white p-4" style="min-height:369px">
             <?php
                 //MAQUETAMOS LA ENTRADA SELECCIONADA
                 echo '<h2 class="text-decoration-underline m-3 mt-4">'. $ent['titulo'] .'</h2>
@@ -114,11 +103,15 @@
 
                 //SI EL USUARIO LOGUEADO ES EL AUTOR DE LA ENTRADA MAQUETA LOS BOTONES DE EDICION
                 if($usuario == $ent['usuario']){
-                    echo '<a href="forms/entrada_form.php?id='. $_GET['id'] .'" class="btn btn-warning mb-4">Editar Entrada</a>
-                        <a href="entrada.php?id='. $_GET['id'] .'&rm=1" class="btn btn-danger mb-4">Borrar Entrada</a>';
+                    echo '<a href="forms/entrada_form.php?id='. $_GET['id'] .'" class="btn btn-warning m-3">Editar Entrada</a>
+                        <a href="entrada.php?id='. $_GET['id'] .'&rm=1" class="btn btn-danger m-3">Borrar Entrada</a>';
                 }
             ?>
         </article>
     </div>
+
+    <!--------------------------PIE-------------------------------->
+    <?php require_once "./modules/pie.php" ?>
+
 </body>
 </html>

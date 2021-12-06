@@ -29,7 +29,7 @@
                 //ERROR EN LA INSERCION
                 $_SESSION["error_sql"] = 1;
             }else{
-                header('Location: index.php');
+                header('Location: ../index.php');
             }
         
             $db = NULL;
@@ -48,32 +48,22 @@
 
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js"></script>
-</head>
 
-<!---------------------------------------------------PAGINA--------------------------------------------------->
-<body class="bg-secondary">
+    <!--------------------------HEAD-------------------------------->
+    <?php require_once "../modules/head.php" ?>
 
     <!----------------------------------CABECERA---------------------------------->
-    <header class="m-5 p-5 border border-2 bg-light">
-        <a class="text-decoration-none link-dark" href="index.php"><h1>Mi blog de videojuegos</h1></a>
+    <header class="p-3 bg-dark">
+        <a class="text-decoration-none link-light" href="../index.php"><h1>Mi blog de videojuegos</h1></a>
         <div class="row">
             <!-------NAV------->
-            <nav class="col navbar navbar-expand-sm bg-light navbar-light">
+            <nav class="col navbar navbar-expand-sm bg-dark navbar-dark">
                 <div class="container-fluid">
                     <ul class="navbar-nav">
                         <!--MAQUETAMOS LAS CATEGORIAS EN EL NAV-->
-                        <?php 
+                        <?php
                             foreach($categorias as $id => $nombre){
-                                echo '<li class="nav-item"><a class="nav-link" href=index.php?cat='. $id .'>'. $nombre .'</a></li>';
+                                echo '<li class="nav-item"><a class="nav-link" href=../index.php?cat='. $id .'>'. $nombre .'</a></li>';
                             }
                         ?>
                     </ul>
@@ -81,16 +71,16 @@
             </nav>
 
             <!-------BARRA DE BUSQUEDA------->
-            <form method="post" action="../search.php" class="col d-flex" style="justify-content: right; align-items:center;">
+            <form method="post" action="search.php" class="col d-flex" style="justify-content: right; align-items:center;">
                 <input style="height: fit-content;" type="text" placeholder="Buscar entrada..." name="search">
                 <input style="height: fit-content;" type="submit" value="Buscar">
             </form>
         </div>
-    </header>
+    </header>    
 
     <!--------------------------CUERPO DE LA PAGINA-------------------------------->
     <div class="row m-5">
-        <article class="col border border-2 bg-light">
+        <article class="col bg-dark text-white" style="min-height:369px">
             <h1 class="m-2">Nueva Categoria</h1>
 
             <!--ERROR CON LA BASE DE DATOS-->
@@ -103,7 +93,7 @@
                 }
             ?>
 
-            <!----------FORMULARIO DE LOG IN---------->
+            <!----------FORMULARIO DE CATEGORIA---------->
             <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) ?>" name="new_categoria" class="m-2">
                 <!--NOMBRE-->
                 <label class="form-label" for="nombre">Nombre de la categoría:<br>
@@ -123,5 +113,9 @@
             </form>
         </article>
     </div>
+
+    <!--------------------------PIE-------------------------------->
+    <?php require_once "../modules/pie.php" ?>
+
 </body>
 </html>
