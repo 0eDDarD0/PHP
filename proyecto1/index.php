@@ -49,6 +49,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         <strong>Usuario registrado con exito!</strong>
                     </div>';
+                unset($_SESSION['sign_in']);
             }
         }
     ?>

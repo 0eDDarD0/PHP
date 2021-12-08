@@ -157,7 +157,7 @@
             </nav>
 
             <!-------BARRA DE BUSQUEDA------->
-            <form method="post" action="search.php" class="col d-flex" style="justify-content: right; align-items:center;">
+            <form method="post" action="../search.php" class="col d-flex" style="justify-content: right; align-items:center;">
                 <input style="height: fit-content;" type="text" placeholder="Buscar entrada..." name="search">
                 <input style="height: fit-content;" type="submit" value="Buscar">
             </form>

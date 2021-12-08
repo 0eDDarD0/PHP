@@ -1,0 +1,22 @@
+He puesto el proyecto en produccion para poder probarlo
+online en la siguiente direccion: https://proyecto1dwesblog.000webhostapp.com/
+
+Para reutilizar todo el codigo posible algunas paginas realizan mas de una tarea,
+para que no resulte confuso al comienzo de cada fichero hay un par de lineas que
+explican todas las funciones que desempeña la pagina.
+
+La pagina usa bootstrap 5.
+
+Aun asi los ficheros estan estructurados segun el tipo principal de trabajo que
+realizan:
+
+	process: Todos los ficheros que realizan algun proceso o peticion y no 
+		 muestran nada por pantalla.
+
+	styles: Estilos que no usan bootstrap.
+
+	forms: Paginas cuyo proposito principal es mostrar un formulario.
+
+	modules: Codigo reutilizado en todo el proyecto.
+
+	sin carpeta: Las paginas cuya funcion principal es mostrar contenido.
