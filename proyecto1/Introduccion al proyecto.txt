@@ -5,6 +5,8 @@ Para reutilizar todo el codigo posible algunas paginas realizan mas de una tarea
 para que no resulte confuso al comienzo de cada fichero hay un par de lineas que
 explican todas las funciones que desempeña la pagina.
 
+SOLO SE PUEDEN MODIFICAR Y BORRAR ENTRADAS SI ERES EL AUTOR
+
 La pagina usa bootstrap 5.
 
 Aun asi los ficheros estan estructurados segun el tipo principal de trabajo que
