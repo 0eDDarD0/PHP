@@ -1,0 +1,6 @@
+{
+    "require": {
+        "fakerphp/faker": "^1.17",
+        "dompdf/dompdf": "^1.1"
+    }
+}
