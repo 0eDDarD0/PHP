@@ -5,7 +5,7 @@
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => 'c6d98b3d643a9b1596bf7a915df201fe82d2e1cd',
+        'reference' => '2d65e0ff05ab551f17f52da77d76223fc7e9a929',
         'name' => '__root__',
         'dev' => true,
     ),
@@ -16,7 +16,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => 'c6d98b3d643a9b1596bf7a915df201fe82d2e1cd',
+            'reference' => '2d65e0ff05ab551f17f52da77d76223fc7e9a929',
             'dev_requirement' => false,
         ),
         'dompdf/dompdf' => array(
@@ -53,6 +53,15 @@
             'install_path' => __DIR__ . '/../phenx/php-svg-lib',
             'aliases' => array(),
             'reference' => 'f627771eb854aa7f45f80add0f23c6c4d67ea0f2',
+            'dev_requirement' => false,
+        ),
+        'picqer/php-barcode-generator' => array(
+            'pretty_version' => 'v2.2.0',
+            'version' => '2.2.0.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../picqer/php-barcode-generator',
+            'aliases' => array(),
+            'reference' => '7df93b40099e5fefad055543320a36b80dccda05',
             'dev_requirement' => false,
         ),
         'psr/container' => array(

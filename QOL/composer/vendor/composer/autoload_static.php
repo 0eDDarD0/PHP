@@ -19,6 +19,7 @@ class ComposerStaticInit5570f78794010f464b0de3913765eb5f
         'P' => 
         array (
             'Psr\\Container\\' => 14,
+            'Picqer\\Barcode\\' => 15,
         ),
         'F' => 
         array (
@@ -43,6 +44,10 @@ class ComposerStaticInit5570f78794010f464b0de3913765eb5f
         'Psr\\Container\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
+        ),
+        'Picqer\\Barcode\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/picqer/php-barcode-generator/src',
         ),
         'FontLib\\' => 
         array (
