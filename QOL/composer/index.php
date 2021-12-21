@@ -2,7 +2,6 @@
 require_once 'vendor/autoload.php';
 use Dompdf\Dompdf;
 use Faker\Factory;
-use Faker\Provider\es_ES\Payment;
 use Picqer\Barcode\BarcodeGeneratorHTML;
 
 //CREAMOS UNA CADENA CON EL HTML QUE SERA CONVERTIDO A PDF
