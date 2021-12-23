@@ -13,7 +13,7 @@ Este repositorio contiene todos los ejercicios y proyectos sobre lo que aprendí
 Durante la asignatura aprendí el uso de PHP, Cookies y sesiones, uso de bases de datos, etc.
 
 
-<h4>Proyectios en producción:</h4>
+<h3>Proyectos en producción:</h3>
 
 Mi blog de videojuegos:
 https://proyecto1dwesblog.000webhostapp.com/index.php
