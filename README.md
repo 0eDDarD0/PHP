@@ -11,3 +11,9 @@
 Este repositorio contiene todos los ejercicios y proyectos sobre lo que aprendí en programación en servidores con PHP.
 
 Durante la asignatura aprendí el uso de PHP, Cookies y sesiones, uso de bases de datos, etc.
+
+
+<h4>Proyectios en producción:</h4>
+
+Mi blog de videojuegos:
+https://proyecto1dwesblog.000webhostapp.com/index.php
