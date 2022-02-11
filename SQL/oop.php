@@ -8,7 +8,7 @@
 
         //METODOS UTILES
         $select->rowCount(); //numero de filas
-        $insert->lastInsertId(); //id del ultimo insertado
+        $db->lastInsertId(); //id del ultimo insertado
 
 
         //----------------------------------------------------------------------SELECT
